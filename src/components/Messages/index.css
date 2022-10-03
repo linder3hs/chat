@@ -11,3 +11,31 @@
 .input-message {
   padding: 10px;
 }
+
+.header {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.text__white {
+  color: #fff;
+}
+
+.header__container {
+  border-radius: 12px;
+  background-color: #fff !important;
+}
+
+.message__content {
+  height: 85vh;
+  margin-top: 50px;
+  padding: 20px;
+  overflow: auto;
+}
+
+.message__content__avatar__img {
+  background-color: #000;
+  border-radius: 50%;
+  padding: 4px;
+}

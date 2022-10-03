@@ -4,8 +4,10 @@ import { data } from "./data";
 import EmptyChat from "../EmptyChat";
 import MessageList from "../Messages";
 
-const DrawerList = () => {
+const DrawerList = ({ users }) => {
   const [showMessages, setShowMessages] = useState(false);
+
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const { Sider, Content } = Layout;
 
@@ -23,10 +25,13 @@ const DrawerList = () => {
           size="large"
           header={<div>Contactos</div>}
           bordered
-          dataSource={data}
+          dataSource={users}
           renderItem={(item) => (
             <List.Item
-              onClick={() => setShowMessages(true)}
+              onClick={() => {
+                setShowMessages(true);
+                setSelectedUser(item);
+              }}
               style={{
                 cursor: "pointer",
               }}
@@ -38,7 +43,7 @@ const DrawerList = () => {
                     style={{
                       borderRadius: 50,
                     }}
-                    src={item.image}
+                    src={item.profile_url}
                     alt={item.name}
                   />
                 }
@@ -49,7 +54,9 @@ const DrawerList = () => {
         />
       </Sider>
       <Layout>
-        <Content>{showMessages ? <MessageList /> : <EmptyChat />}</Content>
+        <Content>
+          {showMessages ? <MessageList user={selectedUser} /> : <EmptyChat />}
+        </Content>
       </Layout>
     </Layout>
   );
