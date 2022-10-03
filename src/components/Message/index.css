@@ -1,0 +1,28 @@
+.message__content__text {
+  display: flex;
+  align-items: center;
+  height: 100px;
+  margin-top: 20px;
+}
+
+.message__content__image img {
+  margin-top: -20px;
+  background-color: rgb(255, 130, 106);
+  border-radius: 50%;
+  margin-right: 20px;
+}
+
+.c__name {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.c__message {
+  padding: 12px;
+  width: 300px;
+  height: 60px;
+  overflow: auto;
+  background-color: rgb(194, 255, 230);
+  border-radius: 8px;
+  margin-top: -10px;
+}
