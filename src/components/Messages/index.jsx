@@ -1,26 +1,18 @@
 import { useState, useEffect, useRef } from "react";
 import { Input, Button, Layout } from "antd";
-import { get, post } from "../../service";
+import { post } from "../../service";
 import Pusher from "pusher-js";
 import Message from "../Message";
 import "./index.css";
 
-const MessageList = ({ user }) => {
-  const [messages, setMessages] = useState([]);
-
+const MessageList = ({ user, messages, fetchMessage }) => {
   const [message, setMessage] = useState("");
+
+  const { id } = JSON.parse(localStorage.getItem("user"));
 
   const ref = useRef(null);
 
-  const fetchMessage = async () => {
-    const { id } = JSON.parse(localStorage.getItem("user"));
-    const response = await get(`/message/${id}/${user.id}`);
-    setMessages(response.data);
-    scroll();
-  };
-
   const sendMessage = async () => {
-    const { id } = JSON.parse(localStorage.getItem("user"));
     const data = {
       user_id: id,
       sender_id: user.id,
@@ -28,6 +20,7 @@ const MessageList = ({ user }) => {
     };
     setMessage("");
     await post("/message", data);
+    fetchMessage(user);
     scroll();
   };
 
@@ -37,10 +30,6 @@ const MessageList = ({ user }) => {
   }
 
   useEffect(() => {
-    fetchMessage();
-  }, []);
-
-  useEffect(() => {
     const { id } = JSON.parse(localStorage.getItem("user"));
     const pusher = new Pusher("a256e2fc09da7298ea43", {
       cluster: "us2",
@@ -48,13 +37,18 @@ const MessageList = ({ user }) => {
 
     const channel = pusher.subscribe("my-chat");
     channel.bind(`new-message-${id}-${user.id}`, async ({ message }) => {
-      fetchMessage();
+      fetchMessage(user);
     });
 
     channel.bind(`new-message-${user.id}-${id}`, async ({ message }) => {
-      fetchMessage();
+      console.log("new message", message);
+      fetchMessage(user);
     });
   }, []);
+
+  useEffect(() => {
+    scroll();
+  }, [messages]);
 
   return (
     <div className="message-list">
@@ -75,10 +69,7 @@ const MessageList = ({ user }) => {
             </div>
           </Layout.Header>
           <div className="message__content__avatar" ref={ref}>
-            {messages.length > 0 &&
-              messages.map((message) => (
-                <Message senderUser={user} message={message} />
-              ))}
+            <Message senderUser={user} messages={messages} />
           </div>
         </div>
       </div>
